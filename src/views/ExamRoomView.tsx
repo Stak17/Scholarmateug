@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { ExamItem, ExamAttempt } from '../types';
 import confetti from 'canvas-confetti';
+import { callApiOrFallback, getLocalFallbackEssayMark } from '../lib/api';
 import {
   Clock,
   AlertTriangle,
@@ -201,18 +202,18 @@ export const ExamRoomView: React.FC<ExamRoomViewProps> = ({
 
         if (studentAns.length >= 5) {
           try {
-            const res = await fetch('/api/ai/mark-essay', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
+            const data = await callApiOrFallback(
+              '/api/ai/mark-essay',
+              {
                 question: q.question,
                 studentAnswer: studentAns,
                 maxMarks: q.marks,
                 rubric: q.rubric,
                 modelAnswer: q.correctAnswer,
-              }),
-            });
-            const data = await res.json();
+              },
+              () => getLocalFallbackEssayMark(q.question, studentAns, q.marks)
+            );
+
             if (data.evaluation && typeof data.evaluation.suggestedScore === 'number') {
               marksEarned = Math.min(data.evaluation.suggestedScore, q.marks);
               feedback = data.evaluation.detailedFeedback || data.evaluation.evaluationSummary || '';

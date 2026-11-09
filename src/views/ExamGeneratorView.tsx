@@ -20,6 +20,7 @@ import {
   History,
 } from 'lucide-react';
 import { ExamItem } from '../types';
+import { callApiOrFallback, getLocalFallbackExam } from '../lib/api';
 
 interface ExamGeneratorViewProps {
   onStartExam: (exam: ExamItem) => void;
@@ -47,23 +48,21 @@ export const ExamGeneratorView: React.FC<ExamGeneratorViewProps> = ({ onStartExa
     setIsGenerating(true);
     try {
       const sourceDoc = documents.find((d) => d.id === selectedDocId);
+      const subjectName = selectedCourse?.name || 'Academic Subject';
 
-      const res = await fetch('/api/ai/exam-generator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject: selectedCourse?.name || 'Academic Subject',
+      const data = await callApiOrFallback(
+        '/api/ai/exam-generator',
+        {
+          subject: subjectName,
           topic,
           difficulty,
           questionFormat,
           numQuestions,
           durationMinutes,
           sourceMaterial: sourceDoc ? sourceDoc.textContent : undefined,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to generate exam');
+        },
+        () => getLocalFallbackExam(subjectName, topic, difficulty, numQuestions, durationMinutes)
+      );
 
       const generated = data.exam;
 

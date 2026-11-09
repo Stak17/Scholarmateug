@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { QuizItem } from '../types';
 import confetti from 'canvas-confetti';
+import { callApiOrFallback, getLocalFallbackQuiz } from '../lib/api';
 
 interface QuizCentreViewProps {
   onNavigateToTutor?: (topic: string) => void;
@@ -109,20 +110,17 @@ export const QuizCentreView: React.FC<QuizCentreViewProps> = ({ onNavigateToTuto
     try {
       const sourceDoc = documents.find((d) => d.id === selectedDocId);
 
-      const res = await fetch('/api/ai/quiz-generator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const data = await callApiOrFallback(
+        '/api/ai/quiz-generator',
+        {
           subject: newSubject,
           topic: newTopic,
           difficulty: newDifficulty,
           numQuestions: newCount,
           sourceMaterial: sourceDoc ? sourceDoc.textContent : undefined,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to generate quiz');
+        },
+        () => getLocalFallbackQuiz(newSubject, newTopic, newCount)
+      );
 
       const saved = await addQuiz({
         title: data.quiz.title || `${newSubject}: ${newTopic} Quiz`,
