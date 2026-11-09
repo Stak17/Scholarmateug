@@ -1,0 +1,6 @@
+{
+  "name": "ScholarMate Uganda",
+  "description": "AI-Powered Academic Learning, Examination Preparation and Student Performance Management Platform for Ugandan students and educators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

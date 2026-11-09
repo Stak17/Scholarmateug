@@ -1,0 +1,208 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role-based access for students, lecturers, and administrators",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique Firebase Auth UID" },
+        "email": { "type": "string", "format": "email", "description": "User's email address" },
+        "displayName": { "type": "string", "maxLength": 100, "description": "Full name" },
+        "role": { "type": "string", "enum": ["student", "lecturer", "admin"], "description": "System role" },
+        "institution": { "type": "string", "maxLength": 150, "description": "Institution name (e.g. Makerere University, Kyambogo University, MUBS)" },
+        "educationLevel": { "type": "string", "description": "Level of study (University, Secondary, Tertiary)" },
+        "program": { "type": "string", "maxLength": 150, "description": "Programme or course of study" },
+        "academicYear": { "type": "string", "maxLength": 20, "description": "Current academic year" },
+        "semester": { "type": "string", "maxLength": 20, "description": "Current semester" },
+        "preferredLanguage": { "type": "string", "maxLength": 30, "description": "Preferred learning language" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Academic course or subject module",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string", "description": "Owner or creator ID" },
+        "code": { "type": "string", "maxLength": 30 },
+        "name": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "lecturerName": { "type": "string", "maxLength": 100 },
+        "institution": { "type": "string", "maxLength": 150 },
+        "semester": { "type": "string", "maxLength": 20 },
+        "academicYear": { "type": "string", "maxLength": 20 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "code", "name"]
+    },
+    "Document": {
+      "title": "Document",
+      "description": "Uploaded academic document or lecture notes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "fileType": { "type": "string", "maxLength": 20 },
+        "fileSize": { "type": "number" },
+        "textContent": { "type": "string" },
+        "summary": { "type": "string" },
+        "uploadDate": { "type": "string" }
+      },
+      "required": ["userId", "title", "fileType"]
+    },
+    "Quiz": {
+      "title": "Quiz",
+      "description": "Topic or course quiz assessment",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "topic": { "type": "string", "maxLength": 100 },
+        "difficulty": { "type": "string", "enum": ["easy", "intermediate", "difficult", "mixed"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title"]
+    },
+    "Examination": {
+      "title": "Examination",
+      "description": "AI-generated or educator-created examination paper",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "topic": { "type": "string", "maxLength": 100 },
+        "durationMinutes": { "type": "number" },
+        "difficulty": { "type": "string" },
+        "totalMarks": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "durationMinutes"]
+    },
+    "ExamAttempt": {
+      "title": "ExamAttempt",
+      "description": "Student attempt and marking result for an examination",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "examId": { "type": "string" },
+        "userId": { "type": "string" },
+        "score": { "type": "number" },
+        "totalMarks": { "type": "number" },
+        "percentage": { "type": "number" },
+        "feedback": { "type": "string" },
+        "completedAt": { "type": "string" }
+      },
+      "required": ["examId", "userId", "score"]
+    },
+    "Flashcard": {
+      "title": "Flashcard",
+      "description": "Spaced repetition flashcard for academic revision",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "topic": { "type": "string", "maxLength": 100 },
+        "front": { "type": "string", "maxLength": 500 },
+        "back": { "type": "string", "maxLength": 1500 },
+        "status": { "type": "string", "enum": ["easy", "needs_revision", "difficult"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "front", "back"]
+    },
+    "StudyPlan": {
+      "title": "StudyPlan",
+      "description": "Personalized academic revision planner and timetable",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "examDate": { "type": "string" },
+        "availableHoursPerDay": { "type": "number" },
+        "priorities": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId"]
+    },
+    "StudySession": {
+      "title": "StudySession",
+      "description": "Tracked study session log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "topic": { "type": "string" },
+        "durationMinutes": { "type": "number" },
+        "completed": { "type": "boolean" },
+        "date": { "type": "string" }
+      },
+      "required": ["userId", "durationMinutes"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User in-app notifications and study reminders",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "message": { "type": "string", "maxLength": 500 },
+        "type": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "message"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and role access"
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Course information and subjects"
+    },
+    "/documents/{documentId}": {
+      "schema": "Document",
+      "description": "Uploaded study materials and lecture notes"
+    },
+    "/quizzes/{quizId}": {
+      "schema": "Quiz",
+      "description": "Quizzes and assessments"
+    },
+    "/examinations/{examId}": {
+      "schema": "Examination",
+      "description": "Generated examinations"
+    },
+    "/exam_attempts/{attemptId}": {
+      "schema": "ExamAttempt",
+      "description": "Results of examination attempts"
+    },
+    "/flashcards/{flashcardId}": {
+      "schema": "Flashcard",
+      "description": "Flashcard revision items"
+    },
+    "/study_plans/{planId}": {
+      "schema": "StudyPlan",
+      "description": "Timetables and revision schedules"
+    },
+    "/study_sessions/{sessionId}": {
+      "schema": "StudySession",
+      "description": "Logged study sessions"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Reminders and alerts"
+    }
+  }
+}

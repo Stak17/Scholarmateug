@@ -1,0 +1,23 @@
+{
+  "name": "ScholarMate Uganda",
+  "short_name": "ScholarMate",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1e3a8a",
+  "description": "AI-Powered Academic Learning, Examination Preparation and Student Performance Management Platform for Ugandan Students",
+  "icons": [
+    {
+      "src": "/assets/aistudio/Screenshot_20261109_002819_ChatGPT_867854ff.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/aistudio/Screenshot_20261109_002819_ChatGPT_867854ff.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
